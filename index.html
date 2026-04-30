@@ -35,7 +35,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; transition: background 0.3s; overflow-x: hidden; }
 
-        /* Responsive Layout Shell */
         .app-shell { display: flex; flex-direction: row; min-height: 100vh; }
         
         .sidebar {
@@ -53,7 +52,6 @@
 
         .main-content { flex: 1; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
 
-        /* Mobile specific adjustments */
         @media (max-width: 1024px) {
             .app-shell { flex-direction: column; }
             .sidebar { 
@@ -62,7 +60,7 @@
                 position: relative; 
                 border-right: none; 
                 border-bottom: 1px solid var(--border);
-                display: none; /* Hidden by default on mobile, toggled via JS */
+                display: none;
             }
             .sidebar.active { display: flex; }
             .mobile-header { display: flex !important; }
@@ -100,7 +98,7 @@
         .input-wrapper { position: relative; }
         .input-wrapper span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600; font-size: 0.8rem; }
         
-        input {
+        input, select {
             width: 100%;
             padding: 12px 12px 12px 32px;
             border-radius: 8px;
@@ -108,9 +106,10 @@
             background: var(--bg-main);
             color: var(--text-main);
             font-weight: 600;
-            font-size: 1rem; /* Better for mobile zoom prevention */
+            font-size: 1rem;
             outline: none;
         }
+        select { padding-left: 12px; }
 
         .loan-card {
             background: var(--bg-main);
@@ -129,14 +128,6 @@
             color: var(--text-main); 
             font-size: 0.9rem; 
             width: 70%;
-        }
-
-        .tenure-info {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed var(--border);
-            font-size: 0.75rem;
-            line-height: 1.4;
         }
 
         .metrics-grid {
@@ -162,9 +153,19 @@
             padding: 20px;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border);
-            height: 320px;
+            height: 400px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chart-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
         }
 
         .btn {
@@ -183,6 +184,25 @@
         .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
         .btn-icon { padding: 10px; }
 
+        .sip-header { margin-bottom: 16px; }
+        .sip-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .sip-controls-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+        }
+        .sip-field { position: relative; width: 100%; }
+        .sip-field label { display: block; font-size: 0.55rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.05em; }
+        .sip-field select {
+            width: 100%;
+            height: 32px;
+            font-size: 0.7rem;
+            padding: 0 8px;
+            background: var(--bg-main);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
         .strategy-box {
             margin-top: 24px;
             padding: 20px;
@@ -196,18 +216,73 @@
         @media (min-width: 768px) { .strategy-box { flex-direction: row; } .strategy-box > div { flex: 1; } }
         .dark-mode .strategy-box { background: #0f172a; border-color: #1e293b; }
 
-        .save-status {
-            display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-muted);
-            margin-top: 8px; padding: 6px 10px; background: var(--bg-main); border-radius: 6px; width: fit-content;
+        .runway-insight {
+            padding: 12px;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+            border: 1px solid var(--border);
         }
 
-        .highlight-green { color: var(--success); font-weight: 700; }
-        .highlight-red { color: var(--danger); font-weight: 700; }
+        .runway-metrics-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .runway-subcard {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 8px;
+            border-radius: 10px;
+        }
+        .runway-subcard .label { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .runway-subcard .value { font-size: 0.85rem; font-weight: 800; }
+
+        .comfort-lock-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(6px);
+            z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; border-radius: var(--radius-md);
+        }
+        .dark-mode .comfort-lock-overlay { background: rgba(30, 41, 59, 0.9); }
+        
+        .unlock-btn {
+            margin-top: 12px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            font-weight: 700;
+        }
+
+        .tenure-info { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); font-size: 0.75rem; line-height: 1.4; }
+
+        /* LOAN BALANCE CARD STYLES */
+        .loan-analysis-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .loan-analysis-item:last-child { border-bottom: none; }
+        .loan-header-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .loan-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .loan-stat-box { background: var(--bg-main); padding: 8px; border-radius: 8px; }
+        .loan-stat-label { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .loan-stat-value { font-size: 0.85rem; font-weight: 800; }
+        .savings-tag { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; }
+        .dark-mode .savings-tag { background: #064e3b; color: #34d399; }
+
+        @media print {
+            .sidebar, .mobile-header, .unlock-btn, .btn-secondary { display: none !important; }
+            .main-content { padding: 0; width: 100%; max-width: 100%; }
+            .chart-card { break-inside: avoid; border: 1px solid #eee; }
+        }
     </style>
 </head>
 <body>
 
-<!-- Mobile Navbar -->
 <div class="mobile-header">
     <div style="display: flex; align-items: center; gap: 8px;">
         <div style="background: var(--primary); padding: 6px; border-radius: 8px; color: white;">
@@ -216,6 +291,7 @@
         <h1 style="font-size: 1rem; font-weight: 800;">FinSmart<span style="color: var(--primary);">Pro</span></h1>
     </div>
     <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary btn-icon" onclick="window.print()"><i data-lucide="download" style="width:18px"></i></button>
         <button class="btn btn-secondary btn-icon" onclick="toggleTheme()"><i data-lucide="moon" id="theme-icon-mobile" style="width:18px"></i></button>
         <button class="btn btn-primary btn-icon" onclick="toggleSidebar()"><i data-lucide="settings-2" style="width:18px"></i></button>
     </div>
@@ -229,11 +305,6 @@
                     <i data-lucide="trending-up"></i>
                 </div>
                 <h1 style="font-size: 1.1rem; font-weight: 800;">FinSmart<span style="color: var(--primary);">Pro</span></h1>
-            </div>
-
-            <div class="save-status" id="storage-indicator">
-                <i data-lucide="database" style="width:14px; color:var(--text-muted)"></i>
-                <span>Cloud Sync Enabled</span>
             </div>
 
             <div class="section-label">Income Setup</div>
@@ -253,7 +324,7 @@
             </div>
             <div class="input-box">
                 <label>Total Liquid Cash</label>
-                <div class="input-wrapper"><span>₹</span><input type="number" id="current-cash" value="300000" oninput="calculateAndSave()"></div>
+                <div class="input-wrapper"><span>₹</span><input type="number" id="current-cash" value="200000" oninput="calculateAndSave()"></div>
             </div>
 
             <div class="section-label">
@@ -276,14 +347,16 @@
                 <h2 style="font-size: 1.25rem; font-weight: 800;">Financial Summary</h2>
                 <p style="color: var(--text-muted); font-size: 0.8rem;">Last updated: <span id="current-date"></span></p>
             </div>
-            <button class="btn btn-primary desktop-only" onclick="window.print()" style="padding: 8px 16px;">
-                <i data-lucide="download" style="width:16px"></i> Export
-            </button>
+            <div class="desktop-only" style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <i data-lucide="download" style="width:16px"></i> Save as PDF
+                </button>
+            </div>
         </div>
 
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="label">Disposable</div>
+                <div class="label">Monthly Surplus</div>
                 <div class="value" id="val-surplus" style="color: var(--primary);">₹0</div>
             </div>
             <div class="metric-card">
@@ -299,19 +372,106 @@
         <div class="viz-grid">
             <div class="chart-card">
                 <h3 style="font-size: 0.9rem; margin-bottom: 12px;"><i data-lucide="pie-chart" style="width:16px"></i> Budget Flow</h3>
-                <div style="flex:1; position:relative;"><canvas id="budgetChart"></canvas></div>
+                <div class="chart-container"><canvas id="budgetChart"></canvas></div>
             </div>
-            <div class="chart-card">
-                <h3 style="font-size: 0.9rem; margin-bottom: 12px;"><i data-lucide="activity" style="width:16px"></i> Rate Heatmap</h3>
-                <div style="flex:1; position:relative;"><canvas id="rateChart"></canvas></div>
+
+            <div class="chart-card" style="position: relative;">
+                <div class="sip-header">
+                    <div class="sip-title-row">
+                        <i data-lucide="trending-up" style="width:16px; color:var(--success)"></i>
+                        <h3 style="font-size: 0.9rem; font-weight: 800;">SIP Wealth</h3>
+                    </div>
+                    <div class="sip-controls-grid">
+                        <div class="sip-field">
+                            <label>Allocation</label>
+                            <select id="sip-percent" onchange="calculate()">
+                                <option value="0.2">20%</option>
+                                <option value="0.5">50%</option>
+                                <option value="0.8" selected>80%</option>
+                                <option value="1.0">100%</option>
+                            </select>
+                        </div>
+                        <div class="sip-field">
+                            <label>Returns</label>
+                            <select id="sip-roi" onchange="calculate()">
+                                <option value="0.08">8%</option>
+                                <option value="0.10">10%</option>
+                                <option value="0.12" selected>12%</option>
+                                <option value="0.15">15%</option>
+                                <option value="0.18">18%</option>
+                            </select>
+                        </div>
+                        <div class="sip-field">
+                            <label>Period</label>
+                            <select id="sip-years" onchange="calculate()">
+                                <option value="1">1Y</option>
+                                <option value="3">3Y</option>
+                                <option value="5" selected>5Y</option>
+                                <option value="10">10Y</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="sipChart"></canvas>
+                    <div id="comfort-lock" class="comfort-lock-overlay" style="display: none;">
+                        <i data-lucide="lock" style="width:28px; color:var(--warning); margin-bottom:8px;"></i>
+                        <p style="font-weight:800; font-size:0.8rem;">Comfort Zone Locked</p>
+                        <p style="font-size:0.65rem; color:var(--text-muted); max-width: 180px;">Secure 6-month runway before SIP projections.</p>
+                        <button class="unlock-btn" onclick="manualUnlockSIP()">Unlock Anyway</button>
+                    </div>
+                </div>
+
+                <div class="runway-insight" id="sip-insight-box" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <p style="font-size:0.65rem; color:var(--text-muted);">Projected Corpus:</p>
+                        <p style="font-size:1rem; font-weight:800; color:var(--success);" id="sip-final-value">₹0</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="font-size:0.65rem; color:var(--text-muted);">ROI:</p>
+                        <p style="font-size:0.85rem; font-weight:700;" id="sip-roi-display">12%</p>
+                    </div>
+                </div>
             </div>
+
             <div class="chart-card">
-                <h3 style="font-size: 0.9rem; margin-bottom: 12px;"><i data-lucide="shield-alert" style="width:16px"></i> Survival Burn</h3>
-                <div style="flex:1; position:relative;"><canvas id="burnChart"></canvas></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="shield-check" style="width:16px; color:var(--primary)"></i> Safety Net Goal
+                    </h3>
+                    <span id="comfort-badge" style="font-size:0.65rem; background:var(--primary); color:white; padding:2px 8px; border-radius:6px; font-weight:700; letter-spacing: 0.05em;">6 MONTHS</span>
+                </div>
+                <div class="chart-container"><canvas id="runwayGoalChart"></canvas></div>
+                
+                <div class="runway-metrics-row">
+                    <div class="runway-subcard">
+                        <div class="label">Current Cash</div>
+                        <div class="value" id="cash-current-display">₹0</div>
+                    </div>
+                    <div class="runway-subcard" style="border-color: var(--primary);">
+                        <div class="label" style="color: var(--primary);">Safe Target</div>
+                        <div class="value" id="cash-target-display">₹0</div>
+                    </div>
+                </div>
+
+                <div class="runway-insight" id="runway-insight-box" style="margin-top: 10px; text-align: center;">
+                    <p style="font-size:0.9rem; font-weight:800; color:var(--primary);" id="months-to-target">Calculating...</p>
+                </div>
             </div>
-            <div class="chart-card">
-                <h3 style="font-size: 0.9rem; margin-bottom: 12px;"><i data-lucide="line-chart" style="width:16px"></i> Net Worth Projection</h3>
-                <div style="flex:1; position:relative;"><canvas id="wealthChart"></canvas></div>
+            
+            <!-- LOAN BALANCE CARD -->
+            <div class="chart-card" style="height: auto; max-height: 500px; overflow-y: auto;">
+                <h3 style="font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="landmark" style="width:16px; color:var(--danger)"></i> Loan Savings Analysis
+                </h3>
+                <div id="loan-analysis-list">
+                    <!-- Dynamic loan data -->
+                </div>
+                <div id="no-loans-msg" style="padding: 20px; text-align: center; color: var(--text-muted); display: none;">
+                    <i data-lucide="smile" style="width: 24px; margin-bottom: 8px;"></i>
+                    <p style="font-size: 0.8rem;">No active loans. You're debt-free!</p>
+                </div>
             </div>
         </div>
 
@@ -332,6 +492,7 @@
     const STORAGE_KEY = 'finsmart_pro_v2_data';
     let loans = [];
     let charts = {};
+    let sipManuallyUnlocked = false;
 
     function init() {
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -344,9 +505,6 @@
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         sidebar.classList.toggle('active');
-        if (sidebar.classList.contains('active')) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
     }
 
     function calculateAndSave() {
@@ -360,13 +518,14 @@
             bonus: document.getElementById('monthly-side').value,
             exp: document.getElementById('monthly-exp').value,
             cash: document.getElementById('current-cash').value,
+            sipUnlocked: sipManuallyUnlocked,
+            sipRoi: document.getElementById('sip-roi').value,
+            sipPercent: document.getElementById('sip-percent').value,
+            sipYears: document.getElementById('sip-years').value,
             loans: loans,
             theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        const indicator = document.getElementById('storage-indicator');
-        indicator.innerHTML = `<i data-lucide="check" style="width:14px; color:var(--success)"></i><span>Synced</span>`;
-        lucide.createIcons();
     }
 
     function loadFromStorage() {
@@ -376,7 +535,11 @@
             document.getElementById('annual-gross').value = data.annual || 1800000;
             document.getElementById('monthly-side').value = data.bonus || 5000;
             document.getElementById('monthly-exp').value = data.exp || 45000;
-            document.getElementById('current-cash').value = data.cash || 300000;
+            document.getElementById('current-cash').value = data.cash || 200000;
+            if (data.sipRoi) document.getElementById('sip-roi').value = data.sipRoi;
+            if (data.sipPercent) document.getElementById('sip-percent').value = data.sipPercent;
+            if (data.sipYears) document.getElementById('sip-years').value = data.sipYears;
+            sipManuallyUnlocked = data.sipUnlocked || false;
             loans = data.loans || [];
             if (data.theme === 'dark') document.body.classList.add('dark-mode');
         } else {
@@ -417,7 +580,7 @@
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                     <input type="text" class="loan-title-input" value="${loan.name}" oninput="updateLoan(${loan.id}, 'name', this.value)">
-                    <button class="btn-delete" style="background:none; border:none; color:var(--danger)" onclick="deleteLoan(${loan.id})"><i data-lucide="x" style="width:16px"></i></button>
+                    <button style="background:none; border:none; color:var(--danger)" onclick="deleteLoan(${loan.id})"><i data-lucide="trash-2" style="width:14px"></i></button>
                 </div>
                 <div class="grid">
                     <div class="input-box">
@@ -425,7 +588,7 @@
                         <div class="input-wrapper"><span>₹</span><input type="number" value="${loan.balance}" oninput="updateLoan(${loan.id}, 'balance', this.value)"></div>
                     </div>
                     <div class="input-box">
-                        <label>Interest %</label>
+                        <label>Rate %</label>
                         <div class="input-wrapper"><span>%</span><input type="number" step="0.1" value="${loan.rate}" oninput="updateLoan(${loan.id}, 'rate', this.value)"></div>
                     </div>
                     <div class="input-box">
@@ -434,7 +597,7 @@
                     </div>
                     <div class="input-box">
                         <label>Extra</label>
-                        <div class="input-wrapper"><span>+</span><input type="number" value="${loan.prepayment}" oninput="updateLoan(${loan.id}, 'prepayment', this.value)" style="border-color:var(--success)"></div>
+                        <div class="input-wrapper"><span>+</span><input type="number" value="${loan.prepayment}" oninput="updateLoan(${loan.id}, 'prepayment', this.value)"></div>
                     </div>
                 </div>
                 <div class="tenure-info" id="tenure-info-${loan.id}"></div>
@@ -443,6 +606,23 @@
             updateTenureUI(loan);
         });
         lucide.createIcons();
+    }
+
+    function calcTotalInterest(P, r, emi) {
+        if (P <= 0 || emi <= 0) return 0;
+        const monthlyRate = (r / 100) / 12;
+        if (emi <= P * monthlyRate) return Infinity;
+        
+        let balance = P;
+        let totalInt = 0;
+        let limit = 0;
+        while (balance > 0 && limit < 1200) {
+            const interest = balance * monthlyRate;
+            totalInt += interest;
+            balance = balance + interest - emi;
+            limit++;
+        }
+        return totalInt;
     }
 
     function calcMonths(P, annualRate, emi) {
@@ -460,17 +640,65 @@
         const std = calcMonths(loan.balance, loan.rate, loan.emi);
         const acc = calcMonths(loan.balance, loan.rate, loan.emi + loan.prepayment);
         if (std === Infinity) {
-            infoEl.innerHTML = `<span class="highlight-red">⚠️ Trap! EMI < Interest</span>`;
+            infoEl.innerHTML = `<span class="highlight-red">⚠️ Debt Trap</span>`;
         } else {
-            const saved = std - acc;
-            infoEl.innerHTML = `
-                <div style="display:flex; justify-content:space-between">
-                    <span>Base: <b>${std}m</b></span>
-                    <span class="${saved > 0 ? 'highlight-green' : ''}">New: <b>${acc}m</b></span>
-                </div>
-                ${saved > 0 ? `<div class="highlight-green" style="font-size:0.7rem; margin-top:2px;">⚡ Saved ${saved} months</div>` : ''}
-            `;
+            infoEl.innerHTML = `Base: <b>${std}m</b> → <span class="highlight-green">Prepay: <b>${acc}m</b></span>`;
         }
+    }
+
+    function updateLoanAnalysis() {
+        const list = document.getElementById('loan-analysis-list');
+        const emptyMsg = document.getElementById('no-loans-msg');
+        list.innerHTML = '';
+        
+        if (loans.length === 0) {
+            emptyMsg.style.display = 'block';
+            return;
+        }
+        emptyMsg.style.display = 'none';
+
+        loans.forEach(loan => {
+            const baseInterest = calcTotalInterest(loan.balance, loan.rate, loan.emi);
+            const extraInterest = calcTotalInterest(loan.balance, loan.rate, loan.emi + loan.prepayment);
+            const savings = (baseInterest === Infinity || extraInterest === Infinity) ? 0 : baseInterest - extraInterest;
+            
+            const baseTenure = calcMonths(loan.balance, loan.rate, loan.emi);
+            const extraTenure = calcMonths(loan.balance, loan.rate, loan.emi + loan.prepayment);
+            const monthsSaved = (baseTenure === Infinity || extraTenure === Infinity) ? 0 : baseTenure - extraTenure;
+
+            const item = document.createElement('div');
+            item.className = 'loan-analysis-item';
+            item.innerHTML = `
+                <div class="loan-header-row">
+                    <span style="font-weight: 800; font-size: 0.85rem;">${loan.name}</span>
+                    ${savings > 0 ? `<span class="savings-tag">Save ${formatShortINR(savings)}</span>` : ''}
+                </div>
+                <div class="loan-stat-grid">
+                    <div class="loan-stat-box">
+                        <div class="loan-stat-label">Principal Amount</div>
+                        <div class="loan-stat-value">${formatShortINR(loan.balance)}</div>
+                    </div>
+                    <div class="loan-stat-box">
+                        <div class="loan-stat-label">Total Extra Interest</div>
+                        <div class="loan-stat-value" style="color: var(--danger);">${baseInterest === Infinity ? '∞' : formatShortINR(baseInterest)}</div>
+                    </div>
+                    <div class="loan-stat-box">
+                        <div class="loan-stat-label">Time Reduced</div>
+                        <div class="loan-stat-value" style="color: var(--success);">${monthsSaved} Months</div>
+                    </div>
+                    <div class="loan-stat-box">
+                        <div class="loan-stat-label">New Total Interest</div>
+                        <div class="loan-stat-value">${extraInterest === Infinity ? '∞' : formatShortINR(extraInterest)}</div>
+                    </div>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    function manualUnlockSIP() {
+        sipManuallyUnlocked = true;
+        calculateAndSave();
     }
 
     function calculate() {
@@ -491,13 +719,13 @@
         const surplus = monthlyIncome - expense - totalEMI - totalPrepay;
 
         const monthlyBurn = expense + totalEMI + totalPrepay;
-        const runway = monthlyBurn > 0 ? (cash / monthlyBurn).toFixed(1) : "∞";
+        const runway = monthlyBurn > 0 ? (cash / monthlyBurn).toFixed(1) : "0";
 
         const tenures = loans.map(l => calcMonths(l.balance, l.rate, l.emi + l.prepayment));
         const maxTenure = tenures.length > 0 ? Math.max(...tenures) : 0;
         
         let debtDateStr = "Done!";
-        if (maxTenure === Infinity) debtDateStr = "Debt Trap";
+        if (maxTenure === Infinity) debtDateStr = "Infinite";
         else if (maxTenure > 0) {
             const y = Math.floor(maxTenure / 12);
             const m = maxTenure % 12;
@@ -508,45 +736,119 @@
         document.getElementById('val-runway').innerText = runway + "m";
         document.getElementById('val-debt-date').innerText = debtDateStr;
 
-        updateCharts(monthlyIncome, expense, totalEMI, totalPrepay, surplus, cash);
+        updateCharts(monthlyIncome, expense, totalEMI, totalPrepay, surplus, cash, monthlyBurn);
+        updateLoanAnalysis();
         generateNarrative(surplus, runway, maxTenure, cash, expense);
     }
 
-    function updateCharts(income, exp, emi, prepay, surplus, cash) {
-        renderChart('budgetChart', 'doughnut', ['Living', 'EMI', 'Extra', 'Surplus'], [exp, emi, prepay, Math.max(0, surplus)], ['#94a3b8', '#6366f1', '#10b981', '#4ade80']);
-        renderChart('rateChart', 'bar', loans.map(l => l.name), loans.map(l => l.rate), '#ef4444');
-        renderChart('burnChart', 'bar', ['Burn', 'Cash'], [exp+emi+prepay, cash], ['#f59e0b', '#6366f1']);
-        renderChart('wealthChart', 'line', ['Y0','Y1','Y2','Y3','Y4','Y5'], Array.from({length:6}, (_, i) => cash * Math.pow(1.12, i)), '#10b981');
+    function updateCharts(income, exp, emi, prepay, surplus, cash, burn) {
+        renderChart('budgetChart', 'doughnut', ['Exp', 'EMI', 'Extra', 'Left'], [exp, emi, prepay, Math.max(0, surplus)], ['#94a3b8', '#6366f1', '#10b981', '#4ade80']);
+        
+        const targetRunwayMonths = 6;
+        const targetCash = burn * targetRunwayMonths;
+        const gap = Math.max(0, targetCash - cash);
+        const monthsToGoal = surplus > 0 ? Math.ceil(gap / surplus) : Infinity;
+
+        document.getElementById('cash-current-display').innerText = formatShortINR(cash);
+        document.getElementById('cash-target-display').innerText = formatShortINR(targetCash);
+
+        const runwayLabels = [];
+        const runwayValues = [];
+        for(let i=0; i<=6; i++) {
+            runwayLabels.push('M' + i);
+            runwayValues.push(cash + (surplus * i));
+        }
+        renderChart('runwayGoalChart', 'line', runwayLabels, runwayValues, '#6366f1');
+        
+        const runwayInsight = document.getElementById('months-to-target');
+        const isComfortZone = cash >= targetCash;
+        if (isComfortZone) {
+            runwayInsight.innerHTML = `<i data-lucide="check-circle" style="width:16px; display:inline; vertical-align:middle;"></i> Comfort Zone Reached`;
+            runwayInsight.style.color = "var(--success)";
+            document.getElementById('comfort-badge').style.background = 'var(--success)';
+        } else if (surplus <= 0) {
+            runwayInsight.innerHTML = `<i data-lucide="alert-circle" style="width:16px; display:inline; vertical-align:middle;"></i> Negative Surplus`;
+            runwayInsight.style.color = "var(--danger)";
+        } else {
+            runwayInsight.innerHTML = `~${monthsToGoal} Months to Safe Net`;
+            runwayInsight.style.color = "var(--primary)";
+        }
+        lucide.createIcons();
+
+        const lockEl = document.getElementById('comfort-lock');
+        const showSIP = isComfortZone || sipManuallyUnlocked;
+
+        if (!showSIP) {
+            lockEl.style.display = 'flex';
+            document.getElementById('sip-final-value').innerText = "---";
+            renderChart('sipChart', 'bar', ['-'], [0], '#e2e8f0');
+        } else {
+            lockEl.style.display = 'none';
+            const years = parseInt(document.getElementById('sip-years').value);
+            const percentage = parseFloat(document.getElementById('sip-percent').value);
+            const rate = parseFloat(document.getElementById('sip-roi').value);
+            document.getElementById('sip-roi-display').innerText = (rate * 100) + "%";
+
+            const monthlyInvest = Math.max(0, surplus) * percentage;
+            const sipLabels = [];
+            const sipValues = [];
+            for(let y=0; y<=years; y++) {
+                sipLabels.push('Y' + y);
+                if (y === 0) sipValues.push(0);
+                else {
+                    const n = y * 12;
+                    const i = rate / 12;
+                    const corpus = monthlyInvest * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+                    sipValues.push(corpus);
+                }
+            }
+            renderChart('sipChart', 'bar', sipLabels, sipValues, '#10b981');
+            document.getElementById('sip-final-value').innerText = formatINR(sipValues[sipValues.length-1]);
+        }
     }
 
     function renderChart(id, type, labels, data, colors) {
         if (charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), {
+        const ctx = document.getElementById(id);
+        if (!ctx) return;
+        
+        charts[id] = new Chart(ctx, {
             type: type,
-            data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: type === 'line' ? colors : 'transparent', borderRadius: 4, tension: 0.3 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: type === 'doughnut', position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            data: { 
+                labels, 
+                datasets: [{ 
+                    data, 
+                    backgroundColor: colors, 
+                    borderColor: type === 'line' ? colors : 'transparent', 
+                    borderRadius: 4,
+                    tension: 0.3
+                }] 
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: type === 'doughnut' } },
+                scales: type !== 'doughnut' ? { y: { beginAtZero: true, ticks: { display: false } }, x: { grid: { display: false } } } : {}
+            }
         });
     }
 
     function generateNarrative(surplus, runway, tenure, cash, exp) {
         const concl = document.getElementById('ai-conclusion');
         const steps = document.getElementById('ai-steps');
-        if (tenure === Infinity) {
-            concl.innerHTML = `You are in a <b class="highlight-red">Debt Trap</b>. Principal is growing.`;
-            steps.innerHTML = `• Increase EMI immediately.<br>• Stop all luxury spends.`;
-        } else if (runway < 3) {
-            concl.innerHTML = `Runway is <b class="highlight-red">Low (${runway}m)</b>. Build emergency fund.`;
-            steps.innerHTML = `• Pause prepayments.<br>• Reach 6 months of backup.`;
+        if (runway < 6 && !sipManuallyUnlocked) {
+            concl.innerHTML = `Priority: <b>Build Safety Net</b>. Current runway (${runway}m) is risky.`;
+            steps.innerHTML = `• Save ₹${formatShort(surplus)} monthly into liquid fund.<br>• Reach ₹${formatShort(exp * 6)} emergency corpus.`;
         } else {
-            concl.innerHTML = `Strategy is <b class="highlight-green">Stable</b>. Focus on growth.`;
-            steps.innerHTML = `• Automate ₹${formatShort(surplus * 0.7)} SIP.<br>• Check health insurance.`;
+            concl.innerHTML = `Priority: <b>Growth & Compounding</b>. Your net is secure.`;
+            steps.innerHTML = `• Start the configured SIP.<br>• Increase prepayments on high-rate debt.`;
         }
     }
 
     function formatINR(n) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n); }
     function formatShort(n) { return n >= 100000 ? (n/100000).toFixed(1) + "L" : (n/1000).toFixed(1) + "k"; }
+    function formatShortINR(n) { return "₹" + formatShort(n); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); calculate(); }
-    function clearData() { if(confirm("Clear all?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+    function clearData() { if(confirm("Clear?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 
     window.onload = init;
 </script>
