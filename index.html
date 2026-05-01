@@ -93,8 +93,62 @@
             justify-content: space-between;
         }
 
-        .input-box { margin-bottom: 12px; }
-        .input-box label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; color: var(--text-muted); }
+        /* TOOLTIP STYLES */
+        .input-box label { 
+            display: flex; 
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            margin-bottom: 4px; 
+            color: var(--text-muted); 
+            cursor: help;
+            position: relative;
+        }
+
+        .label-info {
+            width: 12px;
+            height: 12px;
+            color: var(--primary);
+            opacity: 0.6;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            width: 200px;
+            font-weight: 400;
+            line-height: 1.4;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 200;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        .input-box label:hover .tooltip, .metric-card:hover .tooltip {
+            opacity: 1;
+        }
+
+        .input-box { margin-bottom: 12px; position: relative; }
         .input-wrapper { position: relative; }
         .input-wrapper span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600; font-size: 0.8rem; }
         
@@ -142,8 +196,10 @@
             border-radius: var(--radius-md);
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            position: relative;
+            cursor: help;
         }
-        .metric-card .label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .metric-card .label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 4px; }
         .metric-card .value { font-size: 1.25rem; font-weight: 800; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; }
 
         .viz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
@@ -309,21 +365,33 @@
 
             <div class="section-label">Income Setup</div>
             <div class="input-box">
-                <label>Annual Gross (CTC)</label>
-                <div class="input-wrapper"><span>₹</span><input type="number" id="annual-gross" value="1800000" oninput="calculateAndSave()"></div>
+                <label>
+                    Monthly In-Hand Salary <i data-lucide="info" class="label-info"></i>
+                    <span class="tooltip">Your actual monthly take-home pay after all taxes and deductions like PF.</span>
+                </label>
+                <div class="input-wrapper"><span>₹</span><input type="number" id="monthly-inhand" value="120000" oninput="calculateAndSave()"></div>
             </div>
             <div class="input-box">
-                <label>Monthly Bonus/Side</label>
+                <label>
+                    Monthly Bonus/Side <i data-lucide="info" class="label-info"></i>
+                    <span class="tooltip">Average monthly income from side hustles, dividends, or recurring bonuses.</span>
+                </label>
                 <div class="input-wrapper"><span>₹</span><input type="number" id="monthly-side" value="5000" oninput="calculateAndSave()"></div>
             </div>
 
             <div class="section-label">Expenses & Cash</div>
             <div class="input-box">
-                <label>Monthly Essentials</label>
+                <label>
+                    Monthly Essentials <i data-lucide="info" class="label-info"></i>
+                    <span class="tooltip">Rent, food, utilities, insurance, and lifestyle costs (excluding loan EMIs).</span>
+                </label>
                 <div class="input-wrapper"><span>₹</span><input type="number" id="monthly-exp" value="45000" oninput="calculateAndSave()"></div>
             </div>
             <div class="input-box">
-                <label>Total Liquid Cash</label>
+                <label>
+                    Total Liquid Cash <i data-lucide="info" class="label-info"></i>
+                    <span class="tooltip">Money that can be accessed quickly, like savings accounts or cash on hand.</span>
+                </label>
                 <div class="input-wrapper"><span>₹</span><input type="number" id="current-cash" value="200000" oninput="calculateAndSave()"></div>
             </div>
 
@@ -356,16 +424,19 @@
 
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="label">Monthly Surplus</div>
+                <div class="label">Monthly Surplus <i data-lucide="info" class="label-info"></i></div>
                 <div class="value" id="val-surplus" style="color: var(--primary);">₹0</div>
+                <span class="tooltip">The money left over each month after paying all expenses and loan EMIs.</span>
             </div>
             <div class="metric-card">
-                <div class="label">Runway</div>
+                <div class="label">Runway <i data-lucide="info" class="label-info"></i></div>
                 <div class="value" id="val-runway">0m</div>
+                <span class="tooltip">How many months you can survive using your current cash if income stops today.</span>
             </div>
             <div class="metric-card">
-                <div class="label">Debt Free</div>
+                <div class="label">Debt Free <i data-lucide="info" class="label-info"></i></div>
                 <div class="value" id="val-debt-date" style="color: var(--success);">Done</div>
+                <span class="tooltip">The estimated time it will take to pay off your longest-running debt.</span>
             </div>
         </div>
 
@@ -460,14 +531,11 @@
                 </div>
             </div>
             
-            <!-- LOAN BALANCE CARD -->
             <div class="chart-card" style="height: auto; max-height: 500px; overflow-y: auto;">
                 <h3 style="font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                     <i data-lucide="landmark" style="width:16px; color:var(--danger)"></i> Loan Savings Analysis
                 </h3>
-                <div id="loan-analysis-list">
-                    <!-- Dynamic loan data -->
-                </div>
+                <div id="loan-analysis-list"></div>
                 <div id="no-loans-msg" style="padding: 20px; text-align: center; color: var(--text-muted); display: none;">
                     <i data-lucide="smile" style="width: 24px; margin-bottom: 8px;"></i>
                     <p style="font-size: 0.8rem;">No active loans. You're debt-free!</p>
@@ -489,7 +557,7 @@
 </div>
 
 <script>
-    const STORAGE_KEY = 'finsmart_pro_v2_data';
+    const STORAGE_KEY = 'finsmart_pro_v3_data';
     let loans = [];
     let charts = {};
     let sipManuallyUnlocked = false;
@@ -514,7 +582,7 @@
 
     function saveToStorage() {
         const data = {
-            annual: document.getElementById('annual-gross').value,
+            monthlyInhand: document.getElementById('monthly-inhand').value,
             bonus: document.getElementById('monthly-side').value,
             exp: document.getElementById('monthly-exp').value,
             cash: document.getElementById('current-cash').value,
@@ -532,7 +600,9 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const data = JSON.parse(saved);
-            document.getElementById('annual-gross').value = data.annual || 1800000;
+            if (data.monthlyInhand) document.getElementById('monthly-inhand').value = data.monthlyInhand;
+            else if (data.annual) document.getElementById('monthly-inhand').value = Math.round(data.annual / 12);
+            
             document.getElementById('monthly-side').value = data.bonus || 5000;
             document.getElementById('monthly-exp').value = data.exp || 45000;
             document.getElementById('current-cash').value = data.cash || 200000;
@@ -584,19 +654,31 @@
                 </div>
                 <div class="grid">
                     <div class="input-box">
-                        <label>Balance</label>
+                        <label>
+                            Balance <i data-lucide="info" class="label-info"></i>
+                            <span class="tooltip">Total remaining principal amount of your loan as of today.</span>
+                        </label>
                         <div class="input-wrapper"><span>₹</span><input type="number" value="${loan.balance}" oninput="updateLoan(${loan.id}, 'balance', this.value)"></div>
                     </div>
                     <div class="input-box">
-                        <label>Rate %</label>
+                        <label>
+                            Rate % <i data-lucide="info" class="label-info"></i>
+                            <span class="tooltip">The annual interest rate charged by your lender.</span>
+                        </label>
                         <div class="input-wrapper"><span>%</span><input type="number" step="0.1" value="${loan.rate}" oninput="updateLoan(${loan.id}, 'rate', this.value)"></div>
                     </div>
                     <div class="input-box">
-                        <label>EMI</label>
+                        <label>
+                            EMI <i data-lucide="info" class="label-info"></i>
+                            <span class="tooltip">Your Fixed Monthly Installment (Principal + Interest).</span>
+                        </label>
                         <div class="input-wrapper"><span>₹</span><input type="number" value="${loan.emi}" oninput="updateLoan(${loan.id}, 'emi', this.value)"></div>
                     </div>
                     <div class="input-box">
-                        <label>Extra</label>
+                        <label>
+                            Extra <i data-lucide="info" class="label-info"></i>
+                            <span class="tooltip">Additional payment you can make each month to close the loan faster.</span>
+                        </label>
                         <div class="input-wrapper"><span>+</span><input type="number" value="${loan.prepayment}" oninput="updateLoan(${loan.id}, 'prepayment', this.value)"></div>
                     </div>
                 </div>
@@ -612,7 +694,6 @@
         if (P <= 0 || emi <= 0) return 0;
         const monthlyRate = (r / 100) / 12;
         if (emi <= P * monthlyRate) return Infinity;
-        
         let balance = P;
         let totalInt = 0;
         let limit = 0;
@@ -639,29 +720,21 @@
         if (!infoEl) return;
         const std = calcMonths(loan.balance, loan.rate, loan.emi);
         const acc = calcMonths(loan.balance, loan.rate, loan.emi + loan.prepayment);
-        if (std === Infinity) {
-            infoEl.innerHTML = `<span class="highlight-red">⚠️ Debt Trap</span>`;
-        } else {
-            infoEl.innerHTML = `Base: <b>${std}m</b> → <span class="highlight-green">Prepay: <b>${acc}m</b></span>`;
-        }
+        if (std === Infinity) infoEl.innerHTML = `<span style="color:var(--danger)">⚠️ Debt Trap</span>`;
+        else infoEl.innerHTML = `Base: <b>${std}m</b> → <span style="color:var(--success)">Prepay: <b>${acc}m</b></span>`;
     }
 
     function updateLoanAnalysis() {
         const list = document.getElementById('loan-analysis-list');
         const emptyMsg = document.getElementById('no-loans-msg');
         list.innerHTML = '';
-        
-        if (loans.length === 0) {
-            emptyMsg.style.display = 'block';
-            return;
-        }
+        if (loans.length === 0) { emptyMsg.style.display = 'block'; return; }
         emptyMsg.style.display = 'none';
 
         loans.forEach(loan => {
             const baseInterest = calcTotalInterest(loan.balance, loan.rate, loan.emi);
             const extraInterest = calcTotalInterest(loan.balance, loan.rate, loan.emi + loan.prepayment);
             const savings = (baseInterest === Infinity || extraInterest === Infinity) ? 0 : baseInterest - extraInterest;
-            
             const baseTenure = calcMonths(loan.balance, loan.rate, loan.emi);
             const extraTenure = calcMonths(loan.balance, loan.rate, loan.emi + loan.prepayment);
             const monthsSaved = (baseTenure === Infinity || extraTenure === Infinity) ? 0 : baseTenure - extraTenure;
@@ -696,24 +769,15 @@
         });
     }
 
-    function manualUnlockSIP() {
-        sipManuallyUnlocked = true;
-        calculateAndSave();
-    }
+    function manualUnlockSIP() { sipManuallyUnlocked = true; calculateAndSave(); }
 
     function calculate() {
-        const annual = parseFloat(document.getElementById('annual-gross').value) || 0;
+        const monthlyInhand = parseFloat(document.getElementById('monthly-inhand').value) || 0;
         const bonus = parseFloat(document.getElementById('monthly-side').value) || 0;
         const expense = parseFloat(document.getElementById('monthly-exp').value) || 0;
         const cash = parseFloat(document.getElementById('current-cash').value) || 0;
 
-        let tax = 0;
-        let taxable = Math.max(0, annual - 75000);
-        if (taxable > 1500000) tax = (taxable - 1500000) * 0.3 + 150000;
-        else if (taxable > 1200000) tax = (taxable - 1200000) * 0.2 + 90000;
-        else if (taxable > 700000) tax = (taxable - 700000) * 0.1;
-
-        const monthlyIncome = (annual - tax) / 12 + bonus;
+        const monthlyIncome = monthlyInhand + bonus;
         const totalEMI = loans.reduce((s, l) => s + l.emi, 0);
         const totalPrepay = loans.reduce((s, l) => s + l.prepayment, 0);
         const surplus = monthlyIncome - expense - totalEMI - totalPrepay;
@@ -788,16 +852,13 @@
             const percentage = parseFloat(document.getElementById('sip-percent').value);
             const rate = parseFloat(document.getElementById('sip-roi').value);
             document.getElementById('sip-roi-display').innerText = (rate * 100) + "%";
-
             const monthlyInvest = Math.max(0, surplus) * percentage;
-            const sipLabels = [];
-            const sipValues = [];
+            const sipLabels = []; const sipValues = [];
             for(let y=0; y<=years; y++) {
                 sipLabels.push('Y' + y);
                 if (y === 0) sipValues.push(0);
                 else {
-                    const n = y * 12;
-                    const i = rate / 12;
+                    const n = y * 12; const i = rate / 12;
                     const corpus = monthlyInvest * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
                     sipValues.push(corpus);
                 }
@@ -809,26 +870,11 @@
 
     function renderChart(id, type, labels, data, colors) {
         if (charts[id]) charts[id].destroy();
-        const ctx = document.getElementById(id);
-        if (!ctx) return;
-        
+        const ctx = document.getElementById(id); if (!ctx) return;
         charts[id] = new Chart(ctx, {
             type: type,
-            data: { 
-                labels, 
-                datasets: [{ 
-                    data, 
-                    backgroundColor: colors, 
-                    borderColor: type === 'line' ? colors : 'transparent', 
-                    borderRadius: 4,
-                    tension: 0.3
-                }] 
-            },
-            options: { 
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: type === 'doughnut' } },
-                scales: type !== 'doughnut' ? { y: { beginAtZero: true, ticks: { display: false } }, x: { grid: { display: false } } } : {}
-            }
+            data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: type === 'line' ? colors : 'transparent', borderRadius: 4, tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: type === 'doughnut' } }, scales: type !== 'doughnut' ? { y: { beginAtZero: true, ticks: { display: false } }, x: { grid: { display: false } } } : {} }
         });
     }
 
@@ -848,7 +894,7 @@
     function formatShort(n) { return n >= 100000 ? (n/100000).toFixed(1) + "L" : (n/1000).toFixed(1) + "k"; }
     function formatShortINR(n) { return "₹" + formatShort(n); }
     function toggleTheme() { document.body.classList.toggle('dark-mode'); calculate(); }
-    function clearData() { if(confirm("Clear?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+    function clearData() { if(confirm("Clear all your data?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 
     window.onload = init;
 </script>
